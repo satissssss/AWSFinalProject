@@ -120,7 +120,7 @@ resource "aws_codepipeline" "build_pipeline" {
       input_artifacts  = ["SourceOutput"]
       output_artifacts = ["BuildOutput"]
       configuration = {
-        ProjectName = aws_codebuild_project.code_build_project.name
+        ProjectName = aws_codebuild_project.code_build_project.[each.key]
       }
     }
   }

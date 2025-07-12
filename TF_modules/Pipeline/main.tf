@@ -14,8 +14,8 @@ resource "aws_codestarconnections_connection" "codestarconn" {
 }
 
 resource "aws_codebuild_project" "code_build_project" {
-  for_each     = toset(var.code_build_name)
-  name         = each.value
+  count        = length(var.code_build_name)
+  name         = var.code_build_name[count.index]
   description  = "Build python source code"
   service_role = aws_iam_role.code_build_role.arn
 
@@ -67,8 +67,8 @@ resource "aws_s3_bucket_public_access_block" "code_pipeline_artifacts_bucket_pol
 }
 
 resource "aws_codepipeline" "build_pipeline" {
-  for_each      = toset(var.code_pipeline_name)
-  name          = each.value
+  count         = length(var.code_pipeline_name)
+  name          = var.code_pipeline_name[count.index]
   role_arn      = aws_iam_role.code_pipeline_role.arn
   pipeline_type = "V2"
 
@@ -120,7 +120,7 @@ resource "aws_codepipeline" "build_pipeline" {
       input_artifacts  = ["SourceOutput"]
       output_artifacts = ["BuildOutput"]
       configuration = {
-        ProjectName = aws_codebuild_project.code_build_project[each.key].name
+        ProjectName = aws_codebuild_project.code_build_project[count.index].name
       }
     }
   }

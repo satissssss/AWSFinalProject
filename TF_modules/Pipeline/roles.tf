@@ -73,7 +73,7 @@ resource "aws_iam_role" "code_pipeline_role" {
 }
 
 resource "aws_iam_policy" "code_pipeline_default_policy" {
-  name = "CPDefaultPolicy-${var.random_string_result}}"
+  name = "CPDefaultPolicy-${var.random_string_result}"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [

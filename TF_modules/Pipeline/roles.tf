@@ -1,5 +1,5 @@
 resource "aws_iam_role" "code_build_role" {
-  name = "CBRole-${var.code_build_name}"
+  name = "CBRole-${var.random_string_result}"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
@@ -11,7 +11,7 @@ resource "aws_iam_role" "code_build_role" {
 }
 
 resource "aws_iam_policy" "code_build_default_policy" {
-  name = "CBDefaultPolicy-${var.code_build_name}"
+  name = "CBDefaultPolicy-${var.random_string_result}"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -61,7 +61,7 @@ resource "aws_iam_role_policy_attachment" "attach_codebuild_policy" {
 }
 
 resource "aws_iam_role" "code_pipeline_role" {
-  name = "CPRole-${var.code_pipeline_name}"
+  name = "CPRole-${var.random_string_result}"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
@@ -73,7 +73,7 @@ resource "aws_iam_role" "code_pipeline_role" {
 }
 
 resource "aws_iam_policy" "code_pipeline_default_policy" {
-  name = "CPDefaultPolicy-${var.code_pipeline_name}"
+  name = "CPDefaultPolicy-${var.random_string_result}}"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -121,7 +121,7 @@ resource "aws_iam_policy" "code_pipeline_default_policy" {
 }
 
 resource "aws_iam_policy" "github_ecr_policy" {
-  name   = "GithubEcrPolicy-${var.code_pipeline_name}"
+  name   = "GithubEcrPolicy-${var.random_string_result}"
   policy = file("../TF_modules/Pipeline/github-ecr-interact.json")
 }
 
@@ -137,7 +137,7 @@ resource "aws_iam_role_policy_attachment" "attach_github_ecr_policy" {
 
 
 resource "aws_iam_role" "eks_deployment_role" {
-  name        = "eks-deployment-role"
+  name        = "eks-deployment-role-${var.random_string_result}"
   description = "Role for EKS deployment"
 
   assume_role_policy = jsonencode({
@@ -155,7 +155,7 @@ resource "aws_iam_role" "eks_deployment_role" {
 }
 
 resource "aws_iam_policy" "eks_deployment_policy" {
-  name        = "eks-deployment-policy"
+  name        = "eks-deployment-policy-${var.random_string_result}"
   description = "Policy for EKS deployment"
 
   policy = jsonencode({

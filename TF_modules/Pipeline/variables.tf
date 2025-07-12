@@ -59,3 +59,9 @@ variable "ecr_repo_name" {
   description = "The name of the repository on ECR"
   type        = string
 }
+
+
+variable "random_string_result" {
+  description = "random string result"
+  type        = string
+}

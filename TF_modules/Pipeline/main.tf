@@ -53,7 +53,7 @@ resource "aws_codebuild_project" "code_build_project" {
 }
 
 resource "aws_s3_bucket" "code_pipeline_artifacts_bucket" {
-  bucket        = "${var.code_pipeline_name}-bucket"
+  bucket        = "${var.random_string_result}-bucket"
   force_destroy = true
 }
 

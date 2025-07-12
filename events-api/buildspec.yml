@@ -1,0 +1,32 @@
+---
+version: 0.2
+env:
+  variables:
+    ENVIRONMENT: dev
+    IMAGE_REPO_NAME: test-component-ll5vy # comes from your created ECR
+    IMAGE_NAME: events-api
+    IMAGE_TAG: latest
+    AWS_DEFAULT_REGION: us-east-1
+    ACCOUNTID: 271271282869
+phases:
+  install:
+    commands:
+      - echo Installing dependencies...
+      - npm install
+  pre_build:
+    commands:
+      - echo Build completed. Starting Docker operations...
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ACCOUNTID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - echo Building Docker image...
+
+  build:
+    commands:
+      - docker build -t $IMAGE_REPO_NAME .
+      - echo Tagging Docker image...
+      - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $ACCOUNTID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_NAME:$IMAGE_TAG
+      - echo Pushing Docker image to ECR...
+      - docker push $ACCOUNTID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_NAME:$IMAGE_TAG
+artifacts:
+  files: []
+

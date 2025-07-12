@@ -53,8 +53,8 @@ resource "aws_codebuild_project" "code_build_project" {
 }
 
 resource "aws_s3_bucket" "code_pipeline_artifacts_bucket" {
-  bucket = "${var.code_pipeline_name}-bucket"
-
+  bucket        = "${var.code_pipeline_name}-bucket"
+  force_destroy = true
 }
 
 resource "aws_s3_bucket_public_access_block" "code_pipeline_artifacts_bucket_policy" {

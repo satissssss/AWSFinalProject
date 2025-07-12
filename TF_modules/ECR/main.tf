@@ -5,4 +5,5 @@ resource "aws_ecr_repository" "default" {
   image_scanning_configuration {
     scan_on_push = var.scan_on_push
   }
+  force_delete = true
 }

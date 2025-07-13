@@ -3,7 +3,7 @@ version: 0.2
 env:
   variables:
     ENVIRONMENT: dev
-    IMAGE_REPO_NAME: test-component-ll5vy # comes from your created ECR
+    IMAGE_REPO_NAME: test-component-1tevv # comes from your created ECR
     IMAGE_NAME: events-api
     IMAGE_TAG: latest
     AWS_DEFAULT_REGION: us-east-1

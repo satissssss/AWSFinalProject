@@ -3,11 +3,11 @@ version: 0.2
 env:
   variables:
     ENVIRONMENT: dev
-    IMAGE_REPO_NAME: test-component-ll5vy # comes from your created ECR
+    IMAGE_REPO_NAME: test-component-1tevv # comes from your created ECR
     IMAGE_NAME: events-web
     IMAGE_TAG: latest
     AWS_DEFAULT_REGION: us-east-1
-    ACCOUNTID: 271271282869
+    ACCOUNTID: 065145552369
 phases:
   install:
     commands:

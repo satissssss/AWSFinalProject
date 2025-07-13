@@ -63,7 +63,7 @@ phases:
         if [ -d "events-api" ]; then
           echo "Building events-api"
           cd events-api
-          IMAGE_REPO_NAME="test-component-api"
+          IMAGE_REPO_NAME="api-1tevv"
           IMAGE_NAME="events-api"
           IMAGE_TAG="latest"
           docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG .
@@ -74,7 +74,7 @@ phases:
         if [ -d "events-website" ]; then
           echo "Building events-website"
           cd events-website
-          IMAGE_REPO_NAME="test-component-web"
+          IMAGE_REPO_NAME="web-1tevv"
           IMAGE_NAME="events-web"
           IMAGE_TAG="latest"
           docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG .

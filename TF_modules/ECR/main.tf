@@ -1,5 +1,6 @@
 resource "aws_ecr_repository" "default" {
-  name                 = var.ecr_repo_name
+  count        = length(var.ecr_repo_name)
+  name         = var.ecr_repo_name[count.index]
   image_tag_mutability = "MUTABLE"
 
   image_scanning_configuration {

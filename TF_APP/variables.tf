@@ -2,7 +2,7 @@ locals {
   region                 = "us-east-1"
   project_name           = "test-${random_string.suffix.result}"
   awsaccount             = "271271282869"
-  ecr_repo_name          = "test-component-${random_string.suffix.result}"
+  ecr_repo_name          = ["web-${random_string.suffix.result}", "api-${random_string.suffix.result}"]
   scan_on_push           = false
   branch_name            = "Mauricio"
   web_code_pipeline_name = "web-cp-${random_string.suffix.result}"

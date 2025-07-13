@@ -7,7 +7,7 @@ env:
     IMAGE_NAME: events-api
     IMAGE_TAG: latest
     AWS_DEFAULT_REGION: us-east-1
-    ACCOUNTID: 271271282869
+    ACCOUNTID: 065145552369
 phases:
   install:
     commands:

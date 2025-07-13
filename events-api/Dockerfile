@@ -7,7 +7,7 @@ COPY . /app/
 # Change the working directory
 WORKDIR /app
 
-# Install dependencies.
+# Install dependencies.test
 RUN npm install
 
 # Start the Express app

@@ -1,6 +1,8 @@
 ---
 version: 0.2
 
+version: 0.2
+
 env:
   variables:
     AWS_DEFAULT_REGION: us-east-1
@@ -15,27 +17,22 @@ phases:
   build:
     commands:
       - |
-        if [ "$(basename $(pwd))" = "events-api" ]; then
-          echo "Building events-api"
-          cd events-api
-          IMAGE_REPO_NAME="api-1tevv"
-          #IMAGE_NAME="events-api"
-          IMAGE_TAG="latest"
-          docker build -t $IMAGE_REPO_NAME .
-          docker tag $IMAGE_REPO_NAME $ACCOUNTID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
-          docker push $ACCOUNTID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
-        fi
-      - |
-        if [ "$(basename $(pwd))" = "events-website" ]; then
-          echo "Building events-website"
-          cd events-website
-          IMAGE_REPO_NAME="web-1tevv"
-          #IMAGE_NAME="events-web"
-          IMAGE_TAG="latest"
-          docker build -t $IMAGE_REPO_NAME .
-          docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $ACCOUNTID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
-          docker push $ACCOUNTID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
-        fi
+        case "$(basename $(pwd))" in
+          "events-api")
+            IMAGE_REPO_NAME="api-1tevv"
+            ;;
+          "events-website")
+            IMAGE_REPO_NAME="web-1tevv"
+            ;;
+          *)
+            echo "Unknown directory: $(basename $(pwd))"
+            exit 1
+            ;;
+        esac
+        IMAGE_TAG="latest"
+        docker build -t $IMAGE_REPO_NAME .
+        docker tag $IMAGE_REPO_NAME $ACCOUNTID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+        docker push $ACCOUNTID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
 
 artifacts:
-  files: []  
+  files: [] 

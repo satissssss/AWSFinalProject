@@ -15,6 +15,14 @@ phases:
   build:
     commands:
       - |
+        if [ -d "events-api" ]; then
+          cd events-api
+        elif [ -d "events-website" ]; then
+          cd events-website
+        else
+          echo "Unknown directory"
+          exit 1
+        fi
         case "$(basename $(pwd))" in
           "events-api")
             IMAGE_REPO_NAME="api-1tevv"
@@ -33,4 +41,4 @@ phases:
         docker push $ACCOUNTID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
 
 artifacts:
-  files: [] 
+  files: []

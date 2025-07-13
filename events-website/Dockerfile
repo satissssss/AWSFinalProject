@@ -4,7 +4,7 @@ FROM public.ecr.aws/docker/library/node:slim
 COPY . /app/
 # Change the working directory
 WORKDIR /app
-# Install dependencies.test
+# Install dependencies.
 RUN npm install
 # Start the Express app
 CMD ["node", "server.js"]

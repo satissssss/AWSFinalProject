@@ -15,6 +15,11 @@ phases:
   build:
     commands:
       - |
+        echo "Environment variables"
+        env
+        echo "Local folder on pipeline"
+        pwd
+        echo "Following below logic" 
         if [ -d "events-api" ]; then
           cd events-api
         elif [ -d "events-website" ]; then

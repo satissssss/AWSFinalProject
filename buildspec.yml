@@ -5,6 +5,11 @@ env:
   variables:
     AWS_DEFAULT_REGION: us-east-1
     ACCOUNTID: 065145552369
+    IMAGE_REPO_NAME_API: api-1tevv
+    IMAGE_REPO_NAME_WEB: web-1tevv
+    SRC_API_FOLDER: events-api
+    SRC_WEB_FOLDER: events-website
+    IMAGE_TAG: latest
 
 phases:
   pre_build:
@@ -15,35 +20,17 @@ phases:
   build:
     commands:
       - |
-        echo "Environment variables"
-        env
-        echo "Local folder on pipeline"
-        pwd
         echo "Following below logic" 
-        if [ -d "events-api" ]; then
-          cd events-api
-        elif [ -d "events-website" ]; then
-          cd events-website
-        else
-          echo "Unknown directory"
-          exit 1
-        fi
-        case "$(basename $(pwd))" in
-          "events-api")
-            IMAGE_REPO_NAME="api-1tevv"
-            ;;
-          "events-website")
-            IMAGE_REPO_NAME="web-1tevv"
-            ;;
-          *)
-            echo "Unknown directory: $(basename $(pwd))"
-            exit 1
-            ;;
-        esac
-        IMAGE_TAG="latest"
-        docker build -t $IMAGE_REPO_NAME .
-        docker tag $IMAGE_REPO_NAME $ACCOUNTID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
-        docker push $ACCOUNTID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+        cd $SRC_API_FOLDER/
+        docker build -t $IMAGE_REPO_NAME_API .
+        docker tag $IMAGE_REPO_NAME_API $ACCOUNTID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME_API:$IMAGE_TAG
+        docker push $ACCOUNTID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME_API:$IMAGE_TAG
+        sleep 5
+        cd ../$SRC_WEB_FOLDER/
+        docker build -t $IMAGE_REPO_NAME_WEB .
+        docker tag $IMAGE_REPO_NAME_WEB $ACCOUNTID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME_WEB:$IMAGE_TAG
+        docker push $ACCOUNTID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME_WEB:$IMAGE_TAG
+
 
 artifacts:
   files: []

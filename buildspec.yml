@@ -1,0 +1,36 @@
+---
+version: 0.2
+
+env:
+  variables:
+    AWS_DEFAULT_REGION: us-east-1
+    ACCOUNTID: 065145552369
+    IMAGE_REPO_NAME_API: api-1tevv
+    IMAGE_REPO_NAME_WEB: web-1tevv
+    SRC_API_FOLDER: events-api
+    SRC_WEB_FOLDER: events-website
+    IMAGE_TAG: latest
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ACCOUNTID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+
+  build:
+    commands:
+      - |
+        echo "Following below logic" 
+        cd $SRC_API_FOLDER/
+        docker build -t $IMAGE_REPO_NAME_API .
+        docker tag $IMAGE_REPO_NAME_API $ACCOUNTID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME_API:$IMAGE_TAG
+        docker push $ACCOUNTID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME_API:$IMAGE_TAG
+        sleep 5
+        cd ../$SRC_WEB_FOLDER/
+        docker build -t $IMAGE_REPO_NAME_WEB .
+        docker tag $IMAGE_REPO_NAME_WEB $ACCOUNTID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME_WEB:$IMAGE_TAG
+        docker push $ACCOUNTID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME_WEB:$IMAGE_TAG
+
+
+artifacts:
+  files: []

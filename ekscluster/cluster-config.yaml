@@ -2,7 +2,7 @@ apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 
 metadata:
-  name: AWS-Final-project-ekscluster4-0714
+  name: fpeksclr10714
   region: us-east-1
   version: "1.30"
 

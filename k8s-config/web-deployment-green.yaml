@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: events-web
-        image: 065145552369.dkr.ecr.us-east-1.amazonaws.com/events-website:3.0
+        image: 065145552369.dkr.ecr.us-east-1.amazonaws.com/web-1tevv:latest
         ports:
         - containerPort: 8080
         env:

@@ -61,7 +61,7 @@ pipeline {
                     $class: 'AmazonWebServicesCredentialsBinding',
                     credentialsId: 'aws-eks-cred'
                 ]]) {
-                    sh '${BIN_PATH}/eksctl create cluster -f cluster_config.yaml'
+                    sh '${BIN_PATH}/eksctl create cluster -f /ekscluster/cluster-config.yaml'
                 }
             }
         }

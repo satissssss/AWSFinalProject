@@ -1,61 +1,56 @@
 pipeline {
     agent any
-
     environment {
-        PLATFORM = 'linux_amd64'        
+        PLATFORM = 'linux_amd64'
         BIN_PATH = '/var/lib/jenkins/.local/bin'
     }
- parameters {
-        string(name: 'EKS_CLUSTER_NAME', defaultValue: '', description: 'EKS Cluster Name')
-     
+    parameters {
+        string(name: 'EKS_CLUSTER_NAME', defaultValue: 'AWS-Final-project-ekscluster-0714', description: 'EKS Cluster Name')
     }
-
-
-    stages {        
-       
+    stages {
         stage('Install kubectl') {
-            steps {            
+            steps {
                 // need to add a check to see if the file exists before installing, or check version against latest version                
                 // need to change this to use jenkins agents (containers) instead of the master node
                 echo "Installing eksctl"
                 sh 'curl -O "https://s3.us-west-2.amazonaws.com/amazon-eks/1.33.0/2025-05-01/bin/linux/amd64/kubectl"'
-                sh 'chmod +x ./kubectl'                                   
-                sh 'mkdir -p ~/.local/bin'                
-                sh 'mv ./kubectl ~/.local/bin/kubectl'                                     
-                echo "Getting kubectl version"                
-                sh '${BIN_PATH}/kubectl version --client=true'                       
+                sh 'chmod +x ./kubectl'
+                sh 'mkdir -p ~/.local/bin'
+                sh 'mv ./kubectl ~/.local/bin/kubectl'
+                echo "Getting kubectl version"
+                sh '${BIN_PATH}/kubectl version --client=true'
             }
         }
         stage('INSTALL EKSCTL') {
             steps {
                 script {
                     echo "Install eksctl"
-                    sh 'curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_${PLATFORM}.tar.gz"'                          
+                    sh 'curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_${PLATFORM}.tar.gz"'
                     sh 'tar -xzf eksctl_$PLATFORM.tar.gz -C /tmp && rm eksctl_$PLATFORM.tar.gz'
-                    sh 'mv /tmp/eksctl ~/.local/bin/eksctl'                    
+                    sh 'mv /tmp/eksctl ~/.local/bin/eksctl'
                     echo "Checking eksctl version"
                     sh '${BIN_PATH}/eksctl version'
-
-                }                
+                }
             }
         }
         stage('DEPLOY TO K8S') {
-            steps {    
-             echo "Provide AWS credential"
-                   withCredentials([[
-			$class: 'AmazonWebServicesCredentialsBinding',
-                    credentialsId: 'aws-eks-cred' ]]){        
-                echo "Install App through kubectl for prod namespace"
- sh 'aws eks update-kubeconfig --region us-east-1 --name ${EKS_CLUSTER_NAME}'
-                sh '${BIN_PATH}/kubectl apply -f namespace_prod.yaml'
-                sh '${BIN_PATH}/kubectl apply -f kubernetes.yaml --namespace="production"'
-                sh '${BIN_PATH}/kubectl wait --for=condition=available deployments --all'                                     
-                echo "Check App status"                
-                sh '${BIN_PATH}/kubectl get svc ui --namespace="production"'                       
-        	    }
-		}
+            steps {
+                echo "Provide AWS credential"
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-eks-cred'
+                ]]) {
+                    echo "Install App through kubectl"
+                    sh 'aws eks update-kubeconfig --region us-east-1 --name ${EKS_CLUSTER_NAME}'
+                    sh '${BIN_PATH}/kubectl apply -f api-deployment.yaml'
+                    sh '${BIN_PATH}/kubectl apply -f web-deployment.yaml'
+		    sh '${BIN_PATH}/kubectl apply -f api-service.yaml'
+		    sh '${BIN_PATH}/kubectl apply -f web-service.yaml'
+		    sh '${BIN_PATH}/kubectl apply -f maria-db-init.yaml'
+                    echo "Check App status"
+                    sh '${BIN_PATH}/kubectl get svc'
+                }
+            }
         }
-
-
-}    
+    }
 }

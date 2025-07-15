@@ -1,0 +1,28 @@
+# my-app-green.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: events-web-green
+  labels:
+    app: events-web
+    version: green
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: events-web
+      version: green
+  template:
+    metadata:
+      labels:
+        app: events-web
+        version: green
+    spec:
+      containers:
+      - name: events-web
+        image: 065145552369.dkr.ecr.us-east-1.amazonaws.com/events-website:3.0
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SERVER
+          value: "http://events-api-svc:8082"

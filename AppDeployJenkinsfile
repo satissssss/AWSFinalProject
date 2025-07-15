@@ -42,11 +42,11 @@ pipeline {
                 ]]) {
                     echo "Install App through kubectl"
                     sh 'aws eks update-kubeconfig --region us-east-1 --name ${EKS_CLUSTER_NAME}'
-                    sh '${BIN_PATH}/kubectl apply -f api-deployment.yaml'
-                    sh '${BIN_PATH}/kubectl apply -f web-deployment.yaml'
-		    sh '${BIN_PATH}/kubectl apply -f api-service.yaml'
-		    sh '${BIN_PATH}/kubectl apply -f web-service.yaml'
-		    sh '${BIN_PATH}/kubectl apply -f maria-db-init.yaml'
+                    sh '${BIN_PATH}/kubectl apply -f k8s-config/api-deployment.yaml'
+                    sh '${BIN_PATH}/kubectl apply -f k8s-config/web-deployment.yaml'
+		    sh '${BIN_PATH}/kubectl apply -f k8s-config/api-service.yaml'
+		    sh '${BIN_PATH}/kubectl apply -f k8s-config/web-service.yaml'
+		    sh '${BIN_PATH}/kubectl apply -f k8s-config/maria-db-init.yaml'
                     echo "Check App status"
                     sh '${BIN_PATH}/kubectl get svc'
                 }

@@ -64,33 +64,6 @@ pipeline {
                     sh '${BIN_PATH}/eksctl create cluster -f cluster_config.yaml'
                 }
             }
-            post {
-                failure {
-                    script {
-                        try {
-                            // if EKS Cluster create fails, try and delete it so we don't leave it in an inconsistent state
-                            // this is hardcoded and needs to be paramterized later
-                            sh 'aws cloudformation delete-stack --region us-east-1 --stack-name ${EKS_CLUSTER_NAME}'
-                            sh 'aws cloudformation wait stack-delete-complete --region us-east-1 --stack-name ${EKS_CLUSTER_NAME}'
-                        }
-                        catch (Exception e) {
-                            echo "Failed to delete Cloudformation Stack: " + e.getMessage()
-                            echo "Forcing deletion of Cloudformation Stack"
-                            sh 'aws cloudformation delete-stack --deletion-mode FORCE_DELETE_STACK --region us-east-1 --stack-name ${EKS_CLUSTER_NAME}'
-                            sh 'aws cloudformation wait stack-delete-complete --region us-east-1 --stack-name ${EKS_CLUSTER_NAME}'
-                        }
-                        finally {
-                            try {
-                                // -w flag waits for entire cluster to be deleted before returning a response
-                                sh '${BIN_PATH}/eksctl delete cluster -f /cluster_config.yaml -w'
-                            }
-                            catch (Exception e) {
-                                echo "Failed to delete EKS Cluster:" + e.getMessage()
-                            }
-                        }
-                    }
-                }
-            }
         }
         stage('Update kubeconfig') {
             steps {

@@ -1,0 +1,27 @@
+# my-app-blue.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ labels:
+   app: events-web-blue
+ name: events-web-blue
+spec:
+ replicas: 3
+ selector:
+   matchLabels:
+     app: events-web-blue
+     ver: blue
+ template:
+   metadata:
+     labels:
+       app: events-web-blue
+       ver: blue
+   spec:
+     containers:
+     - image: 065145552369.dkr.ecr.us-east-1.amazonaws.com/events-website:2.0
+       name: events-web-blue
+       ports:
+       - containerPort: 8080
+       env:
+       - name: SERVER
+         value: "http://events-api-svc:8082"

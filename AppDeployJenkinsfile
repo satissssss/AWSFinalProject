@@ -56,6 +56,7 @@ pipeline {
         }
         stage('DEPLOY TO K8S') {
             steps {
+            script{
                 echo "Provide AWS credential"
                 withCredentials([[
                     $class: 'AmazonWebServicesCredentialsBinding',
@@ -64,7 +65,7 @@ pipeline {
                     echo "Install App through kubectl"
                     sh 'aws eks update-kubeconfig --region us-east-1 --name ${EKS_CLUSTER_NAME}'
                     echo "Deploying selected component: ${params.COMPONENT}"
-            script{
+            
                     if (${ params.COMPONENT } == 'api') {
                         sh "${BIN_PATH}/kubectl apply -f k8s-config/api-deployment${VERSION}.yaml"
                         sh "${BIN_PATH}/kubectl apply -f k8s-config/api-service.yaml"
@@ -75,10 +76,11 @@ pipeline {
                         sh "${HELM_HOME}/helm install database-server oci://registry-1.docker.io/bitnamicharts/mariadb"
                         sh "${BIN_PATH}/kubectl apply -f k8s-config/maria-db-init.yaml"
                     }
-                }
+                
                     echo "Check App status"
                     sh '${BIN_PATH}/kubectl get svc'
                 }
+            }    
             }
         }
     }

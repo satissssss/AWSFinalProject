@@ -16,12 +16,12 @@ iam:
 
   serviceAccounts:
   - metadata:
-      name: cluster-autoscaler-sats-caps
+      name: cluster-autoscaler-final-proj
       namespace: kube-system
     wellKnownPolicies:
       autoScaler: true
   - metadata:
-      name: aws-load-balancer-controller-sats-caps
+      name: aws-load-balancer-controller-final-proj
       namespace: kube-system
     wellKnownPolicies:
       awsLoadBalancerController: true
@@ -40,7 +40,7 @@ addons:
  
 managedNodeGroups:
 
-  - name: nodegroup-1
+  - name: final-proj-nodegroup-1
     spot: true
     instanceTypes: ["t2.medium"]
     minSize: 2
@@ -57,10 +57,10 @@ managedNodeGroups:
         xRay: true
  
 fargateProfiles:
-  - name: on-fargate
+  - name: on-fargate-final-proj
     selectors:
       - namespace: on-fargat
-  - name: myprofile
+  - name: profile-final-proj
     selectors: 
     - namespace: prod
       labels: 

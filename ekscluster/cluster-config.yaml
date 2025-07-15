@@ -2,7 +2,7 @@ apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 
 metadata:
-  name: AWS-Final-project-ekscluster3-0714
+  name: AWS-Final-project-ekscluster4-0714
   region: us-east-1
   version: "1.30"
 
@@ -16,12 +16,12 @@ iam:
 
   serviceAccounts:
   - metadata:
-      name: cluster-autoscaler-final-proj
+      name: cluster-autoscaler-fp
       namespace: kube-system
     wellKnownPolicies:
       autoScaler: true
   - metadata:
-      name: aws-load-balancer-controller-final-proj
+      name: aws-load-balancer-controller-fp
       namespace: kube-system
     wellKnownPolicies:
       awsLoadBalancerController: true

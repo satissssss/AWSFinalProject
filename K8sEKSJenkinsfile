@@ -61,7 +61,7 @@ pipeline {
                     $class: 'AmazonWebServicesCredentialsBinding',
                     credentialsId: 'aws-eks-cred'
                 ]]) {
-                    sh '${BIN_PATH}/eksctl create cluster -f ekscluster/cluster_config.yaml'
+                    sh '${BIN_PATH}/eksctl create cluster -f /ekscluster/cluster_config.yaml'
                 }
             }
             post {
@@ -82,7 +82,7 @@ pipeline {
                         finally {
                             try {
                                 // -w flag waits for entire cluster to be deleted before returning a response
-                                sh '${BIN_PATH}/eksctl delete cluster -f ekscluster/cluster_config.yaml -w'
+                                sh '${BIN_PATH}/eksctl delete cluster -f /ekscluster/cluster_config.yaml -w'
                             }
                             catch (Exception e) {
                                 echo "Failed to delete EKS Cluster:" + e.getMessage()

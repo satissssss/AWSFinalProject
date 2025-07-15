@@ -10,8 +10,6 @@ pipeline {
     stages {
         stage('Install kubectl') {
             steps {
-                // need to add a check to see if the file exists before installing, or check version against latest version                
-                // need to change this to use jenkins agents (containers) instead of the master node
                 echo "Installing eksctl"
                 sh 'curl -O "https://s3.us-west-2.amazonaws.com/amazon-eks/1.33.0/2025-05-01/bin/linux/amd64/kubectl"'
                 sh 'chmod +x ./kubectl'
@@ -31,6 +29,16 @@ pipeline {
                     echo "Checking eksctl version"
                     sh '${BIN_PATH}/eksctl version'
                 }
+            }
+        }
+        stage('Install helm') {
+            steps {          
+                echo "Installing Helm"
+                sh 'curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3'
+                sh 'chmod 700 get_helm.sh'
+                sh './get_helm.sh'
+                echo "Getting helm version"
+                sh '${BIN_PATH}/helm list'
             }
         }
         stage('DEPLOY TO K8S') {

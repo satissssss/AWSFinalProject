@@ -49,7 +49,7 @@ pipeline {
                     """
 
                     // Add Helm to PATH for this run
-                    env.PATH = "${HELM_HOME}:${env.PATH}"
+                    //env.PATH = "${HELM_HOME}:${env.PATH}"
 
                     // Verify Helm version
                     sh "${HELM_HOME}/helm version"

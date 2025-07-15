@@ -5,7 +5,7 @@ pipeline {
         BIN_PATH = '/var/lib/jenkins/.local/bin'
     }
     parameters {
-        string(name: 'EKS_CLUSTER_NAME', defaultValue: 'AWS-Final-project-ekscluster2-0714', description: 'EKS Cluster Name')
+        string(name: 'EKS_CLUSTER_NAME', defaultValue: 'fpeksclr10714', description: 'EKS Cluster Name')
     }
     stages {
         stage('Install kubectl') {

@@ -112,23 +112,5 @@ withCredentials([[
             }
 }
         }  
-        stage('Deploy Application') {
-                     steps {
-                echo 'Deploying application to EKS Cluster'
-             steps {
-withCredentials([[
-			$class: 'AmazonWebServicesCredentialsBinding',
-                    credentialsId: 'aws-eks-cred' ]]){ 
-                    echo "deploy App"
-                    sh '${BIN_PATH}/kubectl apply -f mario-pod.yaml'                          
-                    sh '${BIN_PATH}/kubectl describe pod supermario-capstone'
-                    sh '${BIN_PATH}/kubectl expose pod supermario-capstone --type=LoadBalancer --name=supermario-svc-capstone --port=80 --target-port=8080'
-                    sh '${BIN_PATH}/kubectl get service'
- 			}
-           }
-            }
-
-
-        }
-    }    
+            }    
 }

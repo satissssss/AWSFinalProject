@@ -42,6 +42,7 @@ pipeline {
                 ]]) {
                     echo "Install App through kubectl"
                     sh 'aws eks update-kubeconfig --region us-east-1 --name ${EKS_CLUSTER_NAME}'
+		    sh 'helm install database-server oci://registry-1.docker.io/bitnamicharts/mariadb'	
                     sh '${BIN_PATH}/kubectl apply -f k8s-config/api-deployment.yaml'
                     sh '${BIN_PATH}/kubectl apply -f k8s-config/web-deployment.yaml'
 		    sh '${BIN_PATH}/kubectl apply -f k8s-config/api-service.yaml'

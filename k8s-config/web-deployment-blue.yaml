@@ -18,7 +18,7 @@ spec:
        ver: blue
    spec:
      containers:
-     - image: 065145552369.dkr.ecr.us-east-1.amazonaws.com/events-website:2.0
+     - image: 065145552369.dkr.ecr.us-east-1.amazonaws.com/web-cp-1tevv:latest
        name: events-web-blue
        ports:
        - containerPort: 8080

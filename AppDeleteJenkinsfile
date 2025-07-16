@@ -6,6 +6,8 @@ pipeline {
     }
     parameters {
         string(name: 'EKS_CLUSTER_NAME', defaultValue: 'fpeksclr10714', description: 'EKS Cluster Name')
+        choice(name: 'COMPONENT', choices: ['API', 'WEB', 'DB'], description: 'Select component to delete')
+        string(name: 'VERSION', defaultValue: 'V1.0', description: 'App or web version to Delete (e.g. V1.2)')
     }
     stages {
         stage('Install kubectl') {
@@ -42,11 +44,17 @@ pipeline {
                 ]]) {
                     echo "Delete App through kubectl"
                     sh 'aws eks update-kubeconfig --region us-east-1 --name ${EKS_CLUSTER_NAME}'
-                    sh '${BIN_PATH}/kubectl delete -f k8s-config/api-deployment.yaml'
-                    sh '${BIN_PATH}/kubectl delete -f k8s-config/web-deployment.yaml'
-		    sh '${BIN_PATH}/kubectl delete -f k8s-config/api-service.yaml'
-		    sh '${BIN_PATH}/kubectl delete -f k8s-config/web-service.yaml'
-		    sh '${BIN_PATH}/kubectl delete -f k8s-config/maria-db-init.yaml'
+                    echo "Deploying selected component: ${params.COMPONENT}"
+                    if (params.COMPONENT == 'API') {
+                        sh "${BIN_PATH}/kubectl delete -f k8s-config/api-deployment${VERSION}.yaml"
+                        sh "${BIN_PATH}/kubectl delete -f k8s-config/api-service.yaml"
+                    } else if (params.COMPONENT == 'WEB') {
+                        sh "${BIN_PATH}/kubectl delete -f k8s-config/web-deployment${VERSION}.yaml"
+                        sh "${BIN_PATH}/kubectl delete -f k8s-config/web-service.yaml"
+                    } else if (params.COMPONENT == 'DB') {
+                        sh "${HELM_HOME}/helm uninstall database-server"
+                        sh "${BIN_PATH}/kubectl delete -f k8s-config/maria-db-init.yaml"
+                    }
                     echo "Check App status"
                     sh '${BIN_PATH}/kubectl get svc'
                 }

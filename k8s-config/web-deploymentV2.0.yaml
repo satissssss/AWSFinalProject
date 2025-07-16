@@ -13,7 +13,6 @@ spec:
    metadata:
      labels:
        app: events-web
-       ver: v2.0
    spec:
      containers:
      - image: 065145552369.dkr.ecr.us-east-1.amazonaws.com/events-website:2.0

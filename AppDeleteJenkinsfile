@@ -3,6 +3,7 @@ pipeline {
     environment {
         PLATFORM = 'linux_amd64'
         BIN_PATH = '/var/lib/jenkins/.local/bin'
+        HELM_VERSION = "v3.15.2"
         HELM_HOME = "${env.WORKSPACE}/helm-bin"
     }
     parameters {
@@ -34,6 +35,25 @@ pipeline {
                     echo "Checking eksctl version"
                     sh '${BIN_PATH}/eksctl version'
                 }
+            }
+        }
+        stage('Install helm') {
+            steps {
+                echo "Installing Helm"
+                // Create directory for Helm
+                sh "mkdir -p ${HELM_HOME}"
+                // Download and extract Helm
+                sh """
+                        curl -sSL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -o helm.tar.gz
+                        tar -zxvf helm.tar.gz
+                        mv linux-amd64/helm ${HELM_HOME}/helm
+                        chmod +x ${HELM_HOME}/helm
+                        rm -rf helm.tar.gz linux-amd64
+                    """
+                // Add Helm to PATH for this run
+                //env.PATH = "${HELM_HOME}:${env.PATH}"
+                // Verify Helm version
+                sh "${HELM_HOME}/helm version"
             }
         }
         stage('DEPLOY TO K8S') {

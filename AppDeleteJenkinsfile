@@ -1,0 +1,88 @@
+pipeline {
+    agent any
+    environment {
+        PLATFORM = 'linux_amd64'
+        BIN_PATH = '/var/lib/jenkins/.local/bin'
+        HELM_VERSION = "v3.15.2"
+        HELM_HOME = "${env.WORKSPACE}/helm-bin"
+    }
+    parameters {
+        string(name: 'EKS_CLUSTER_NAME', defaultValue: 'fpeksclr10714', description: 'EKS Cluster Name')
+        choice(name: 'COMPONENT', choices: ['API', 'WEB', 'DB'], description: 'Select component to delete')
+        string(name: 'VERSION', defaultValue: 'V1.0', description: 'App or web version to Delete (e.g. V1.2)')
+    }
+    stages {
+        stage('Install kubectl') {
+            steps {
+                // need to add a check to see if the file exists before installing, or check version against latest version                
+                // need to change this to use jenkins agents (containers) instead of the master node
+                echo "Installing eksctl"
+                sh 'curl -O "https://s3.us-west-2.amazonaws.com/amazon-eks/1.33.0/2025-05-01/bin/linux/amd64/kubectl"'
+                sh 'chmod +x ./kubectl'
+                sh 'mkdir -p ~/.local/bin'
+                sh 'mv ./kubectl ~/.local/bin/kubectl'
+                echo "Getting kubectl version"
+                sh '${BIN_PATH}/kubectl version --client=true'
+            }
+        }
+        stage('INSTALL EKSCTL') {
+            steps {
+                script {
+                    echo "Install eksctl"
+                    sh 'curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_${PLATFORM}.tar.gz"'
+                    sh 'tar -xzf eksctl_$PLATFORM.tar.gz -C /tmp && rm eksctl_$PLATFORM.tar.gz'
+                    sh 'mv /tmp/eksctl ~/.local/bin/eksctl'
+                    echo "Checking eksctl version"
+                    sh '${BIN_PATH}/eksctl version'
+                }
+            }
+        }
+        stage('Install helm') {
+            steps {
+                echo "Installing Helm"
+                // Create directory for Helm
+                sh "mkdir -p ${HELM_HOME}"
+                // Download and extract Helm
+                sh """
+                        curl -sSL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -o helm.tar.gz
+                        tar -zxvf helm.tar.gz
+                        mv linux-amd64/helm ${HELM_HOME}/helm
+                        chmod +x ${HELM_HOME}/helm
+                        rm -rf helm.tar.gz linux-amd64
+                    """
+                // Add Helm to PATH for this run
+                //env.PATH = "${HELM_HOME}:${env.PATH}"
+                // Verify Helm version
+                sh "${HELM_HOME}/helm version"
+            }
+        }
+        stage('DEPLOY TO K8S') {
+            steps {
+                script {
+                    echo "Provide AWS credential"
+                    withCredentials([[
+                        $class: 'AmazonWebServicesCredentialsBinding',
+                        credentialsId: 'aws-eks-cred'
+                    ]]) {
+                        echo "Delete App through kubectl"
+                        sh 'aws eks update-kubeconfig --region us-east-1 --name ${EKS_CLUSTER_NAME}'
+                        echo "Deploying selected component: ${params.COMPONENT}"
+                        if (params.COMPONENT == 'API') {
+                            sh "${BIN_PATH}/kubectl delete -f k8s-config/api-deployment${VERSION}.yaml"
+                            sh "${BIN_PATH}/kubectl delete -f k8s-config/api-service.yaml"
+                        } else if (params.COMPONENT == 'WEB') {
+                            sh "${BIN_PATH}/kubectl delete -f k8s-config/web-deployment${VERSION}.yaml"
+                            sh "${BIN_PATH}/kubectl delete -f k8s-config/web-service.yaml"
+                        } else if (params.COMPONENT == 'DB') {
+                            sh "${HELM_HOME}/helm uninstall database-server"
+                            sh "${BIN_PATH}/kubectl delete -f k8s-config/maria-db-init.yaml"
+                        }
+                        echo "Check App status"
+                        sh '${BIN_PATH}/kubectl get svc'
+                    }
+                }
+            }
+        }
+    }
+}
+

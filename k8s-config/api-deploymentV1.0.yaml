@@ -5,7 +5,7 @@ metadata:
    app: events-api
  name: events-api
 spec:
- replicas: 3
+ replicas: 5
  selector:
    matchLabels:
      app: events-api

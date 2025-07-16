@@ -3,6 +3,7 @@ pipeline {
     environment {
         PLATFORM = 'linux_amd64'
         BIN_PATH = '/var/lib/jenkins/.local/bin'
+        HELM_HOME = "${env.WORKSPACE}/helm-bin"
     }
     parameters {
         string(name: 'EKS_CLUSTER_NAME', defaultValue: 'fpeksclr10714', description: 'EKS Cluster Name')

@@ -10,6 +10,6 @@ spec:
    protocol: TCP
    targetPort: 8082
  selector:
-   app: events-api
-   ver: v1.0
+   app: events-api # blue or green
+   ver: v1.0 # blue or green
  type: ClusterIP

@@ -5,7 +5,7 @@ metadata:
    app: events-api
  name: events-api
 spec:
- replicas: 5
+ replicas: 3
  selector:
    matchLabels:
      app: events-api
@@ -17,8 +17,7 @@ spec:
        ver: v1.0
    spec:
      containers:
-     - #image: 065145552369.dkr.ecr.us-east-1.amazonaws.com/events-api:latest
-       image: 065145552369.dkr.ecr.us-east-1.amazonaws.com/api-1tevv:latest
+     - image: 065145552369.dkr.ecr.us-east-1.amazonaws.com/api-1tevv:latest
        name: events-api
        ports:
        - containerPort: 8082

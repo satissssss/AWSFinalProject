@@ -5,19 +5,19 @@ metadata:
    app: events-web
  name: events-web
 spec:
- replicas: 3
+ replicas: 4
  selector:
    matchLabels:
      app: events-web
-     ver: v4.0
+     ver: v2.0
  template:
    metadata:
      labels:
        app: events-web
-       ver: v4.0
+       ver: v2.0
    spec:
      containers:
-     - image: 065145552369.dkr.ecr.us-east-1.amazonaws.com/events-website:4.0
+     - image: 065145552369.dkr.ecr.us-east-1.amazonaws.com/events-website:2.0
        name: events-web
        ports:
        - containerPort: 8080
